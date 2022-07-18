@@ -1,0 +1,183 @@
+// Implememntation Suduko Solver in Jack
+
+class Main {
+
+  function int remainder(int a, int b){
+    var int minus;
+    var int quiotent;
+    var int rem;
+    var int sqt;
+
+    let minus = a - b;
+    let quiotent = 0;
+
+    while(minus > -1){
+      let minus = minus - b;
+      let quiotent = quiotent + 1;
+    }
+    let rem = minus+b;
+
+    return rem;
+  }
+
+ /* checks whether the given number is in the given row */
+
+  function boolean isNumberinRow(MultiArray a, int n, int r){
+    var int i;
+    let i = 0;
+
+    while(i < 9){
+      if(a.get(r,i) = n){
+        return true;
+      }
+      let i = i + 1;
+    }
+    return false;
+  }
+
+   /* checks whether the given number is in the given coloumn */
+
+  function boolean isNumberinColumn(MultiArray a, int n, int c){
+    var int i;
+    let i = 0;
+
+    while(i < 9){
+      if(a.get(i,c) = n){
+        return true;
+      }
+      let i = i + 1;
+    }
+    return false;
+  }
+
+   /* checks whether the given number is in the given 3x3 box  */
+
+  function boolean isinBox(MultiArray a, int n, int r, int c){
+    var int boxRowSt, boxColSt;
+    var int i,j;
+
+    let boxRowSt = (r - (Main.remainder(r,3)));
+    let boxColSt = (c - (Main.remainder(c,3)));
+
+    let i = boxRowSt;
+
+    while(i < (boxRowSt + 3)){
+          let j = boxColSt;
+      while(j < (boxColSt + 3)){
+        if(a.get(i,j) = n){
+          return true;
+        }
+        let j = j + 1;
+      }
+      let i = i + 1;
+    }
+    return false;
+  }
+
+  /* checks whether is itvalid to insert a number into the given row and coloumn */
+
+  function boolean isvalidPlacement(MultiArray a, int n, int r, int c){
+    return (~((Main.isNumberinRow(a,n,r)) | (Main.isNumberinColumn(a,n,c)) | (Main.isinBox(a,n,r,c))));
+  }
+
+   function boolean solveSuduko(MultiArray a){
+     var int row;
+     var int col;
+     var int numtotry;
+
+     let row = 0;
+
+     while(row < 9){
+      let col = 0;
+       while(col < 9){
+         if((a.get(row,col)) = 0){
+           let numtotry = 1;
+           while(numtotry < 10){
+             if(Main.isvalidPlacement(a,numtotry,row,col)){
+               do a.add(row,col,numtotry);
+
+             if(Main.solveSuduko(a)){
+               return true;
+             }
+             else{
+               do a.add(row,col,0);
+             }
+             }
+             let numtotry = numtotry + 1;
+           }
+           return false;
+         }
+         let col = col + 1;
+       }
+       let row = row + 1;
+     }
+     return true;
+   }
+
+   function void main(){
+    var MultiArray b;
+    var int i, j;
+    let b = MultiArray.new(9);
+
+    do b.add(0,0,7);
+    do b.add(0,2,2);
+    do b.add(0,4,5);
+    do b.add(0,6,6);
+
+
+
+    do b.add(1,5,3);
+
+    do b.add(2,0,1);
+
+    do b.add(2,5,9);
+    do b.add(2,6,5);
+
+    do b.add(3,0,8);
+    do b.add(3,7,9);
+    do b.add(4,1,4);
+
+    do b.add(4,2,3);
+    do b.add(4,6,7);
+
+    do b.add(4,7,5);
+    do b.add(5,1,9);
+    do b.add(5,8,8);
+    do b.add(6,2,9);
+    do b.add(6,3,7);
+    do b.add(6,8,5);
+
+    do b.add(7,3,2);
+    do b.add(8,2,7);
+    do b.add(8,4,4);
+    do b.add(8,6,2);
+    do b.add(8,8,3);
+
+
+    if(Main.solveSuduko(b)){
+      do Output.printString("The Suduko is Solved");
+    }
+
+    else{
+      do Output.printString("The Suduko is Unsolved");
+    }
+
+    do Output.println();
+    do Output.println();
+
+    let i = 0;
+    while (i < 9) {
+      let j = 0;
+      while (j < 9) {
+        do Output.printInt(b.get(i, j));
+        do Output.printString(" ");
+        let j = j + 1;
+      }
+      do Output.println();
+      let i = i + 1;
+    }
+
+   return;
+ }
+
+}
